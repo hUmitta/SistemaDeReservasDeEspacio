@@ -1,10 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import Home from './components/Home';
+import Home from "./components/Home";
 import ReservaGimnasio from './components/ReservaGimnasio';
 import ReservaBiblioteca from './components/ReservaBiblioteca';
 import ReservaSala from './components/ReservaSala';
 import ReservaCubiculos from './components/ReservaCubiculos';
+import CommentSection from './components/CommentSection';
 import './App.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
             <li><Link to="/reserva-biblioteca">Reserva Biblioteca</Link></li>
             <li><Link to="/reserva-sala">Reserva Sala</Link></li>
             <li><Link to="/reserva-cubiculos">Reserva Cubículos</Link></li>
+            <li><Link to="/comentarios">Comentarios</Link></li>
           </ul>
         </nav>
 
@@ -27,7 +29,8 @@ function App() {
           <Route path="/reserva-biblioteca" element={<ReservaBiblioteca />} />
           <Route path="/reserva-sala" element={<ReservaSala />} />
           <Route path="/reserva-cubiculos" element={<ReservaCubiculos />} />
-        </Routes>
+          <Route path="/comentarios" element={<CommentSection />} />
+        </Routes>a
       </div>
     </Router>
   );
