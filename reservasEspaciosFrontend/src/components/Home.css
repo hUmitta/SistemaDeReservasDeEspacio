@@ -49,7 +49,9 @@
     transform: translateY(-10px);
     color: #007acc;
 }
-
+.subtitle1{
+    position: center;
+}
 .subtitle {
     font-size: 1.5rem;
     margin: 1rem 0;

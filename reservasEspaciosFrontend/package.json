@@ -11,9 +11,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.0.2",
+    "@mui/material": "^6.0.2",
+    "@react-ui/core": "^1.0.0-beta4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-scripts": "^3.4.4"
+    "react-scripts": "^3.0.1",
+    "semantic-ui-css": "^2.5.0",
+    "semantic-ui-react": "^2.1.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

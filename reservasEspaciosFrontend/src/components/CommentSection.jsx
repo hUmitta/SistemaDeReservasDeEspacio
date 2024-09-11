@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Container, Grid, Header, Form, Button } from 'semantic-ui-react';
+import { Container, Grid, Header, Form } from 'semantic-ui-react';
+import { Button as MUIButton } from '@mui/material'; // Import MUI Button
 
 function CommentSection() {
   const [comments, setComments] = useState([]);
@@ -28,7 +29,9 @@ function CommentSection() {
               onChange={(event) => setNewComment(event.target.value)}
               placeholder="Escribe un comentario"
             />
-            <Button type="submit">Enviar</Button>
+            <MUIButton variant="contained" color="primary" type="submit"> 
+              Enviar
+            </MUIButton>
           </Form>
         </Grid.Column>
       </Grid>
