@@ -5,39 +5,46 @@ import { AuthContext } from "../context/AuthContext";
 export default function NavBar() {
   const { loginWithGoogle, user, logout } = useContext(AuthContext);
 
-  return (
-    <nav>
-      <ul>
-        <li>
-          <NavLink to="/">Home</NavLink>
-        </li>
-        {user && (
-          <>
+    return (
+
+        <div>
+
             <li>
-              <NavLink to="/formulary">Formulary</NavLink>
+                <NavLink to="/">Home</NavLink>
             </li>
-            <li>
-              <NavLink to="/about">About</NavLink>
-            </li>
-          </>
-        )}
-        <li>
-          {user ? (
-            <>
-              <span>{user.name}</span>
-              <img src={user.avatar} alt="User Avatar" />
-              <button onClick={logout}>Salir</button>
-            </>
-          ) : (
-            <>
-              <button onClick={loginWithGoogle}>Ingresar con Google</button>
-              <NavLink to="/login-generico">
-                <button>Login Genérico</button>
-              </NavLink>
-            </>
-          )}
-        </li>
-      </ul>
-    </nav>
-  );
+
+            
+
+            {user ? 
+                <>
+                    <li>
+                        <NavLink to="/calendary">calendary</NavLink>
+                    </li>
+                    <li>
+                        <NavLink to="/formulary" >formulary</NavLink>
+                    </li>
+
+                    <li>
+                        <p>{user.name}</p>
+                        <img src={user.avatar} />
+                        <button onClick={logout}>Salir de la sesion</button>
+
+                    </li>
+                    
+                </>
+                :
+
+                <>
+                    <li>
+                        <button onClick={loginWithGoogle}  >Login</button>
+                    </li>
+                
+                </>
+
+            }
+
+
+
+        </div>
+    )
 }

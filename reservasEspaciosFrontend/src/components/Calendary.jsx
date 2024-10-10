@@ -6,30 +6,15 @@ import '../styles/calendar.css';
 
 const localizer = dayjsLocalizer(dayjs);
 
-const allEvents = [
-  {
-    title: 'Cubiculo, cubiculo 1',
-    start: new Date(),
-    end: new Date(),
-    type: 'CUBICULO',
-    style: { backgroundColor: 'blue', color: 'white' }, 
-  },
-  {
-    title: 'Biblioteca, sala 2',
-    start: new Date(2024, 9, 24, 12, 0), 
-    end: new Date(2024, 9, 24, 14, 0),  
-    type: 'BIBLIOTECA',
-    style: { backgroundColor: 'red', color: 'white' }, 
-  },
-];
-
-export default function Calendary() {
+export default function Calendary({ events }) {
   const [selectedFilters, setSelectedFilters] = useState({
     CUBICULO: true,
     BIBLIOTECA: true,
+    GIMNASIO: true, // Agregar filtro para el Gimnasio
   });
 
-  const filteredEvents = allEvents.filter(event => selectedFilters[event.type]);
+  // Filtrar eventos basados en los filtros seleccionados
+  const filteredEvents = events.filter(event => selectedFilters[event.type]);
 
   const handleFilterToggle = (type) => {
     setSelectedFilters(prevState => ({
@@ -40,9 +25,9 @@ export default function Calendary() {
 
   return (
     <div>
-      <h1>Pruebas crear agendamientos</h1>
+      <h1>Calendario de reservas</h1>
       
-      {/*BOTONES DE FILTRADO */}
+      {/* BOTONES DE FILTRADO */}
       <div>
         <button
           className={`calendar-button button-cubiculo ${selectedFilters.CUBICULO ? 'button-active' : 'button-inactive'}`}
@@ -56,13 +41,19 @@ export default function Calendary() {
         >
           BIBLIOTECA
         </button>
+        <button
+          className={`calendar-button button-gimnasio ${selectedFilters.GIMNASIO ? 'button-active' : 'button-inactive'}`}
+          onClick={() => handleFilterToggle('GIMNASIO')}
+        >
+          GIMNASIO
+        </button>
       </div>
 
-      {/* CALENDARIO COMO TAL */}
+      {/* CALENDARIO */}
       <div className="calendar-container">
         <Calendar
           localizer={localizer}
-          events={filteredEvents}
+          events={filteredEvents}  // Mostrar solo los eventos filtrados
           startAccessor="start"
           endAccessor="end"
           style={{ height: 500 }}
