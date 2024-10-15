@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from "react";
 import { supabase } from "../supabase/client";
-import bcrypt from "bcryptjs";
 
 export const AuthContext = createContext({
   user: null,
@@ -8,6 +7,7 @@ export const AuthContext = createContext({
   loginGeneric: async () => {},
   registerUser: async () => {},
   logout: async () => {},
+  getUserReservations: async () => {}, // Añadir la función aquí
 });
 
 const AuthProvider = ({ children }) => {
@@ -56,113 +56,64 @@ const AuthProvider = ({ children }) => {
   };
 
   const loginGeneric = async (userEmail, userPassword) => {
-
-
     try {
-        console.log("Iniciando sesiÃ³n con:", { userEmail, userPassword });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: userEmail,
+        password: userPassword
+      });
 
+      if (error) {
+        console.error("Error con el login generico:", error.message);
+        return null;
+      }
 
+      if (!data || !data.user) {
+        alert("Usuario no encontrado. Verifica las credenciales.");
+        return null;
+      }
 
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: userEmail,
-            password: userPassword
-        });
+      setUser({
+        id: data.user.id,
+        email: data.user.email,
+        avatar: data.user.user_metadata?.avatar_url,
+        name: data.user.email.split('@')[0],
+      });
 
-
-        if (error) {
-            console.error("Error con el login generico:", error.message);
-            return null;
-        }
-
-        if (!data || !data.user) {
-            console.alert("Usuario no encontrado. verificacion de las credenciales.");
-            return null;
-
-
-
-        }
-
-        console.log("Data ,",  data)
-        console.log("Data ,",  data.user.email)
-        const email = data.user.email
-
-
-
-        setUser({
-            id: data.user.id,
-            email: data.user.email,
-            avatar: data.user.user_metadata?.avatar_url, 
-            name: email.split('@')[0],
-        });
-
-        return data.user;
+      return data.user;
 
     } catch (error) {
-        console.error("Error al iniciar el login generico:", error);
-        return null; 
+      console.error("Error al iniciar el login generico:", error);
+      return null; 
     }
   };
 
-
-  
-  
   const registerUser = async (email, password) => {
-    console.log("Auth Context ", email, password);
     try {
-        const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
-        
-        
-        if (signUpError) {
-            console.log("Error al registrar usuario: ", signUpError.message); 
-            return null;
+      const { data, error: signUpError } = await supabase.auth.signUp({ email, password });
+      
+      if (signUpError) {
+        console.log("Error al registrar usuario: ", signUpError.message);
+        return null;
+      }
 
+      if (!data || !data.user) {
+        console.log("Usuario no registrado correctamente. Verifica la respuesta.");
+        return null;
+      }
 
-        }
+      setUser({
+        id: data.user.id,
+        email: data.user.email,
+        avatar: data.user.user_metadata?.avatar_url,
+        name: email.split('@')[0]
+      });
 
-        if (!data || !data.user) {
-            console.log("Usuario no registrado correctamente. revisa la respuesta.");
-            return null;
-
-
-        }
-
-        const user = data.user;
-
-
-
-        const { error: insertError } = await supabase.from("usuarios").insert([{ email: user.email, passwd: password }]);
-        
-        if (insertError) {
-            console.log("Error al insertar en la tabla usuarios: ", insertError.message);
-            return null;
-
-        }
-        
-        console.log("Data user ,",  user)
-        console.log("Data ")
-
-
-        setUser({
-            id: user.id,
-            email: user.email,
-            avatar: user.user_metadata?.avatar_url,
-            name: email.split('@')[0]
-        });
-
-       
-
-        console.log("Usuario registrado y insertado  en la tabla usuarios correctamente");
-
-        return data.user;
-
-
+      return data.user;
 
     } catch (error) {
-        console.error("Error general al registrarse:", error);
+      console.error("Error general al registrarse:", error);
     }
   };
-  
-  
 
   const logout = async () => {
     try {
@@ -173,8 +124,41 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // Nueva función para obtener reservas del usuario
+  const getUserReservations = async () => {
+    if (!user) return []; // Si no hay usuario, retorna un array vacío
+
+    const userId = user.id; // Obtén el ID del usuario desde el contexto
+    const { data: reservations, error } = await supabase
+      .from('reservas')
+      .select(`
+        id,
+        horario_id,
+        horarios (
+          fecha,
+          hora_inicio,
+          hora_fin,
+          recurso_id
+        )
+      `)
+      .eq('usuario_id', userId);
+
+    if (error) {
+      console.error('Error al obtener reservas:', error);
+      return [];
+    }
+
+    return reservations.map(reservation => ({
+      id: reservation.id,
+      recurso_id: reservation.horarios.recurso_id,
+      fecha: reservation.horarios.fecha,
+      hora_inicio: reservation.horarios.hora_inicio,
+      hora_fin: reservation.horarios.hora_fin,
+    }));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loginWithGoogle, loginGeneric, registerUser, logout }}>
+    <AuthContext.Provider value={{ user, loginWithGoogle, loginGeneric, registerUser, logout, getUserReservations }}>
       {children}
     </AuthContext.Provider>
   );

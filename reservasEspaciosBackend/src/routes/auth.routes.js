@@ -1,15 +1,21 @@
-import { Router } from 'express'
-import { login, reserve, getResource, getHorary } from '../controllers/auth.controller.js'
+import { Router } from 'express';
+import { login, reserve, getResource, getHorary, deleteReservation, getUserReservations } from '../controllers/auth.controller.js';
 
-const router = Router()
+const router = Router();
 
 // Rutas
-router.post('/reserve/:resourceId/:date/:hour', reserve)
+router.post('/reserve/:resourceId/:date/:hour', reserve);
 
-router.post('/login', login)
+router.post('/login', login);
 
-router.get('/getResource/:resourceType/', getResource)
+// Nueva ruta para obtener las reservas de un usuario
+router.get('/reservas/:userId', getUserReservations); // Añade esta línea
 
-router.get('/getHorary/:id/:date', getHorary)
+router.get('/getResource/:resourceType/', getResource);
 
-export default router
+router.get('/getHorary/:id/:date', getHorary);
+
+// Nueva ruta para eliminar una reserva
+router.delete('/deleteReservation/:reservationId', deleteReservation);
+
+export default router;
